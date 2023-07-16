@@ -5,8 +5,8 @@ class Categoria(models.Model):
     essencial = models.BooleanField(default=False)
     valor_planejamento = models.FloatField(default=0)
     
-def __str__(self):
-    return self.categoria
+    def __str__(self):
+        return self.categoria
 
 class Conta(models.Model):
     banco_choices = (

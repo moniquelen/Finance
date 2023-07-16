@@ -12,26 +12,30 @@
     <br>
     <div class="container">
         <div class="row">
+
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert {{ message.tags }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+
             <div class="col-md-5">
                 <p class="fonte-destaque">Suas contas</p>
-                <hr>
-
+    
                 <div class="contas">
-
-                    
+                    {% for conta in contas %}
                         <div class="lista-contas-main">
-                            <span><img width="10%" src="#">&nbsp&nbspNubank</span>
-
-                            <span class="total-conta positivo ">R$ 1.800,00&nbsp&nbsp&nbsp <a href="#"><img src="{% static 'perfil/img/exit.png' %}"></a></span>
+                            <span><img width="10%" src="{{conta.icone.url}}">&nbsp&nbsp{{conta.apelido}}</span>
+                            <span class="total-conta positivo ">R$ {{conta.valor}}&nbsp&nbsp&nbsp <a href="#"><img src="{% static 'perfil/img/exit.png' %}"></a></span>
                         </div>
                         <br>
-                    
+                    {% endfor %}
                     
                 </div>
 
                 <hr>
                 <span class="fonte-destaque">Total:</span>
-                <span class="positivo total-conta font-destaque">R$ 1.800,00</span>
+                <span class="positivo total-conta font-destaque">R$ {{total_contas}}</span>
             </div>
 
             <div class="col-md-2"></div>
@@ -39,7 +43,7 @@
             <div class="col-md-5">
                 <p class="fonte-destaque">Nova conta</p>
                 
-                <form action="" method="POST">
+                <form action="{% url 'cadastrar_banco' %}" method="POST" enctype='multipart/form-data'>{% csrf_token %}
                     <label>Apelido</label>
                     <input type="text" name="apelido" class="form-control" placeholder="">
                     <br>
@@ -57,7 +61,7 @@
                     <label>Valor</label>
                     <input type="number" name="valor" class="form-control" placeholder="">
                     <br>
-                    <input type="file" placeholder="Ícone" name="icone">
+                    <input type="file" placeholder="Ícone" name="icone" required>
                     <br>
                     <br>
                     <input style="width: 100%" type="submit" class="botao-principal">

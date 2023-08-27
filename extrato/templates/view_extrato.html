@@ -36,7 +36,9 @@
             <div class="col-md">
                 <label>Período</label>
                 <select name="periodo" class="form-select">
-                    <option>Últimos 7 dias</option>
+                    <option value="7">Últimos 7 dias</option>
+                    <option value="30">Mês Atual</option>
+                    <option value="365">Ano atual</option>
                 </select>
             </div>
         
@@ -46,11 +48,13 @@
         <div class="row">
             <div class="col-md-2">
                 <input style="width: 100%" type="submit" class="botao-principal" value="Filtrar">
-                
             </div>
             </form>
             <div class="col-md-2">
-                <a href="" class="botao-secundario">Exportar extrato</a>
+                <a href="{% url 'exportar_pdf' %}" class="botao-secundario">Exportar extrato</a>
+            </div>
+            <div class="col-md-2">
+                <a href="{% url 'view_extrato' %}" class="botao-secundario">Limpar Filtros</a>
             </div>
         </div>
         <br>

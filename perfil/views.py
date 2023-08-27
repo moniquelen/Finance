@@ -2,17 +2,27 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from .models import Conta, Categoria
 from django.contrib import messages
+from extrato.models import Valores
 from django.contrib.messages import constants
 from .uteis import calcula_total
+from datetime import datetime
 
 def home(request):
     contas = Conta.objects.all()
+    valores = Valores.objects.filter(data__month = datetime.now().month)
+    entradas = valores.filter(tipo = 'E')
+    saidas = valores.filter(tipo = 'S')
+    
     total_contas = calcula_total(contas, 'valor')
+    total_entradas = calcula_total(entradas, 'valor')
+    total_saidas = calcula_total(saidas, 'valor')
+    
     
     return render(request, 'home.html', {'contas' : contas, 'total_contas' : total_contas})
 
 def gerenciar(request):
     contas = Conta.objects.all()
+    total_contas = 0
     categorias = Categoria.objects.all()
     total_contas = calcula_total(contas, 'valor')
     
@@ -41,7 +51,7 @@ def cadastrar_banco(request):
     conta.save()
     messages.add_message(request, constants.SUCCESS, 'Conta cadastrada com sucesso.')
 
-    return redirect('/perfil/gerenciar/')
+    return redirect('/perfil/gerenciar/', {'conta': conta})
 
 def deletar_banco(request, id):
     conta = Conta.objects.get(id=id)
@@ -52,6 +62,10 @@ def deletar_banco(request, id):
 def cadastrar_categoria(request):
     nome = request.POST.get('categoria')
     essencial = bool(request.POST.get('essencial'))
+    
+    if len(nome.strip()) == 0:
+        messages.add_message(request, constants.ERROR, 'Preencha o nome da categoria.')
+        return redirect('/perfil/gerenciar/')
     
     categoria = Categoria(
         categoria=nome,

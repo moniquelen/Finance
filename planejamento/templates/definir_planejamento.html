@@ -24,17 +24,45 @@
         <td>
           <input
             type="text"
+            id="valor-categoria-{{categoria.id}}"
             class="form-control"
             value="{{categoria.valor_planejamento}}"
           />
         </td>
         <td>
-          <button style="width: 100%" class="botao-secundario">Salvar</button>
+          <button
+            onClick="update_valor_planejamento_categoria({{categoria.id}})"
+            style="width: 100%"
+            class="botao-secundario"
+          >
+            Salvar
+          </button>
         </td>
       </tr>
       {% endfor %}
     </table>
   </div>
 </div>
+
+<script>
+  function update_valor_planejamento_categoria(id) {
+    valor = document.getElementById('valor-categoria-' + id).value;
+    console.log(valor);
+
+    fetch('/planejamento/update_valor_categoria/' + id, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ novo_valor: valor }),
+    })
+      .then(function (result) {
+        return result.json();
+      })
+      .then(function (data) {
+        console.log(data);
+      });
+  }
+</script>
 
 {% endblock %}

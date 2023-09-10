@@ -4,9 +4,8 @@ from .models import Conta, Categoria
 from django.contrib import messages
 from extrato.models import Valores
 from django.contrib.messages import constants
-from .uteis import calcula_total
+from .uteis import calcula_total, calcula_equilibrio_financeiro
 from datetime import datetime
-from extrato.models import Valores
 
 def home(request):
     contas = Conta.objects.all()
@@ -18,8 +17,9 @@ def home(request):
     total_entradas = calcula_total(entradas, 'valor')
     total_saidas = calcula_total(saidas, 'valor')
     
+    percentual_gastos_essenciais, percentual_gastos_nao_essenciais = calcula_equilibrio_financeiro()
     
-    return render(request, 'home.html', {'contas' : contas, 'total_contas' : total_contas})
+    return render(request, 'home.html', {'contas' : contas, 'total_contas' : total_contas, 'total_entradas': total_entradas, 'total_saidas': total_saidas,  'percentual_gastos_essenciais': round(percentual_gastos_essenciais), 'percentual_gastos_nao_essenciais': round(percentual_gastos_nao_essenciais)})
 
 def gerenciar(request):
     contas = Conta.objects.all()

@@ -82,3 +82,6 @@ def update_categoria(request, id):
     categoria.save()
     
     return redirect('/perfil/gerenciar/')
+
+def dashboard(request):
+    return render(request, 'dashboard.html')

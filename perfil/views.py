@@ -6,6 +6,7 @@ from extrato.models import Valores
 from django.contrib.messages import constants
 from .uteis import calcula_total
 from datetime import datetime
+from extrato.models import Valores
 
 def home(request):
     contas = Conta.objects.all()
@@ -84,4 +85,16 @@ def update_categoria(request, id):
     return redirect('/perfil/gerenciar/')
 
 def dashboard(request):
-    return render(request, 'dashboard.html')
+    dados = {}
+    
+    categorias = Categoria.objects.all()
+    
+    for categoria in categorias:
+        total = 0
+        valores = Valores.objects.filter(categoria=categoria)
+        for v in valores:
+            total += v.valor
+            
+        dados[categoria.categoria] = total
+    
+    return render(request, 'dashboard.html',{'labels': list(dados.keys()), 'values': list(dados.values())})

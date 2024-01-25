@@ -1,5 +1,7 @@
 {% extends 'bases/base.html' %} {% load static %} {% block 'head' %}
-<link href="{% static 'perfil/css/home.css' %}" rel="stylesheet" />
+<head>
+  <link href="{% static 'perfil/css/home.css' %}" rel="stylesheet" />
+</head>
 {% endblock %} {% block 'body' %}
 <div class="container">
   <br />
@@ -13,7 +15,7 @@
         <div class="card">
           <div class="row">
             <div class="col-md-8">
-              <span class="fonte-destaque">R$ {{total_entradas}}</span>
+              <span class="fonte-destaque">RS {{total_entradas}}</span>
             </div>
             <div class="col-md">
               <img
@@ -33,12 +35,12 @@
         <div class="card">
           <div class="row">
             <div class="col-md-8">
-              <span class="fonte-destaque">R$ {{total_saidas}}</span>
+              <span class="fonte-destaque">RS {{total_saidas}}</span>
             </div>
             <div class="col-md">
               <img
                 class="icone-setas"
-                src="{% static 'perfil/img/saidas.png' %}"
+                src="{% static 'perfil/img/exit.png' %}"
               />
             </div>
           </div>
@@ -63,7 +65,7 @@
         <div class="div-contas">
           {% for conta in contas %}
           <div class="lista-conta">
-            <span>{{conta.apelido}}</span>
+            <span>{{conta}}</span>
             <span class="total-conta">R$ {{conta.valor}}</span>
           </div>
           <br />
@@ -83,22 +85,28 @@
             <div class="saldo">
               <span class="fonte-destaque">Saldo mensal</span>
               <br />
-              <span class="font-light">R$ 0.000,00</span>
+              <span class="font-light">R$ {{total_entradas}}</span>
             </div>
           </div>
           <div class="col-md">
             <div class="despesa">
               <span class="fonte-destaque">Despesa mensal</span>
               <br />
-              <span class="font-light">R$ 0.000,00</span>
+              <span class="font-light">R$ {{total_saidas}}</span>
             </div>
           </div>
         </div>
         <hr class="hr-borda" />
         <span class="fonte-destaque">Total livre</span>
-        <span class="font-light negativo">R$ 0.000,00</span>
+        <span class="font-light negativo">R$ {{total_contas}}</span>
         <hr class="hr-borda" />
-        <a href="#" class="botao-principal">Gerenciar dados mensais</a>
+        <a href="{% url 'dashboard' %}" class="botao-principal"
+          >Gerenciar dados mensais</a
+        >
+        <br />
+        <a href="{% url 'view_extrato' %}" class="botao-principal"
+          >Visualizar extrato</a
+        >
       </div>
     </div>
   </div>
@@ -129,7 +137,7 @@
           <div
             class="progress-bar progress-bar-striped bg-info"
             role="progressbar"
-            style="width: {{percentual_gastos_essenciais}}"
+            style="width: {{percentual_gastos_essenciais}}%"
             aria-valuenow="50"
             aria-valuemin="0"
             aria-valuemax="100"
@@ -141,7 +149,7 @@
           <div
             class="progress-bar progress-bar-striped bg-info"
             role="progressbar"
-            style="width: {{percentual_gastos_nao_essenciais}}"
+            style="width: {{percentual_gastos_nao_essenciais}}%"
             aria-valuenow="50"
             aria-valuemin="0"
             aria-valuemax="100"
@@ -149,7 +157,9 @@
         </div>
 
         <hr class="hr-borda" />
-        <a href="#" class="botao-principal">Alterar categorias essenciais</a>
+        <a href="{% url 'gerenciar' %}" class="botao-principal"
+          >Alterar categorias essenciais</a
+        >
       </div>
     </div>
   </div>
@@ -163,10 +173,12 @@
         <hr class="hr-borda" />
 
         <span class="fonte-destaque">Próximas do vencimento</span>
-        <span class="fonte-light">3 contas próximas do vencimento</span>
+        <span class="fonte-light"
+          >{{t_contas_proximas_vencimento}} contas próximas do vencimento</span
+        >
         <br />
         <span class="fonte-destaque negativo">Vencidas</span>
-        <span class="fonte-light">0 contas vencidas</span>
+        <span class="fonte-light">{{t_contas_vencidas}} contas vencidas</span>
 
         <hr class="hr-borda" />
 

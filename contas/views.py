@@ -3,7 +3,7 @@ from perfil.models import Categoria
 from .models import ContaPagar, ContaPaga
 from django.contrib import messages
 from django.contrib.messages import constants
-from datetime import datetime
+from datetime import datetime, date
 
 # Create your views here.
 def definir_contas(request):
@@ -45,4 +45,29 @@ def ver_contas(request):
     restantes = contas.exclude(id__in=contas_vencidas).exclude(id__in=contas_pagas).exclude(id__in=contas_proximas_vencimento)
 
     return render(request, 'ver_contas.html', {'contas_vencidas': contas_vencidas, 'contas_proximas_vencimento': contas_proximas_vencimento, 'restantes': restantes})
-        
+
+def quantificar_contas():
+    MES_ATUAL = datetime.now().month
+    DIA_ATUAL = datetime.now().day
+    contas = ContaPagar.objects.all()
+    contas_pagas = ContaPaga.objects.filter(data_pagamento__month = MES_ATUAL).values('conta')
+    contas_vencidas = contas.filter(dia_pagamento__lt = DIA_ATUAL).exclude(id__in = contas_pagas)
+    contas_proximas_vencimento = contas.filter(dia_pagamento__lte = DIA_ATUAL + 5).filter(dia_pagamento__gt=DIA_ATUAL).exclude(id__in=contas_pagas)
+
+    t_contas_vencidas = len(contas_vencidas)
+    t_contas_proximas_vencimento = len(contas_proximas_vencimento)
+
+    return t_contas_vencidas, t_contas_proximas_vencimento
+
+def pagar_conta(request, id):
+    try:
+        conta_a_pagar = ContaPagar.objects.get(id = id)
+        conta_paga = ContaPaga(
+            conta_id = id,
+            data_pagamento = date.today()
+        )
+        conta_paga.save()
+    except IndexError:
+        messages.add_message(request, constants.ERROR, 'Conta não encontrada!')
+
+    return redirect('/contas/ver_contas')
